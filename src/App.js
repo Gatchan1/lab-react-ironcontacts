@@ -1,91 +1,62 @@
 import './App.css';
-import * as data from "./contacts.json"
+import contactsJSON from "./contacts.json"
+import { useState } from 'react';
 
-const contacts = data
-console.log("contaaacts:",contacts[0])
 
-//sacar de ahí el array de 5 contactos!!!!
+function App() {
+  const initialContacts = contactsJSON.slice(0,5)
+  const [contacts, setContacts] = useState(initialContacts)
+  const initialRemainingContacts = contactsJSON.slice(5)
+  const [remainingContacts, setRemainingContacts] = useState(initialRemainingContacts)
 
-const contactsList = [
-  {
-    "name": "Idris Elba",
-    "pictureUrl": "https://image.tmdb.org/t/p/w500/d9NkfCwczP0TjgrjpF94jF67SK8.jpg",
-    "popularity": 11.622713,
-    "id": "11731993-0604-4bee-80d5-67ad845d0a38",
-    "wonOscar": false,
-    "wonEmmy": false
-  },
-  {
-    "name": "Johnny Depp",
-    "pictureUrl": "https://image.tmdb.org/t/p/w500/kbWValANhZI8rbWZXximXuMN4UN.jpg",
-    "popularity": 15.656534,
-    "id": "7dad00f7-3949-477d-a7e2-1467fd2cfc06",
-    "wonOscar": false,
-    "wonEmmy": false
-  },
-  {
-    "name": "Monica Bellucci",
-    "pictureUrl": "https://image.tmdb.org/t/p/w500/qlT4904d8oi2NIs28RrgnIZDFZB.jpg",
-    "popularity": 16.096436,
-    "id": "0ad5e441-3084-47a1-9e9b-b917539bba71",
-    "wonOscar": false,
-    "wonEmmy": false
-  },
-  {
-    "name": "Gal Gadot",
-    "pictureUrl": "https://image.tmdb.org/t/p/w500/34kHAyBaBhq2kUrmhM15paEBuuI.jpg",
-    "popularity": 10.049256,
-    "id": "b497e3c4-50bb-4ae2-912f-eb36802c5bc2",
-    "wonOscar": false,
-    "wonEmmy": false
-  },
-  {
-    "name": "Ian McKellen",
-    "pictureUrl": "https://image.tmdb.org/t/p/w500/coWjgMEYJjk2OrNddlXCBm8EIr3.jpg",
-    "popularity": 10.070132,
-    "id": "0067ae32-97b6-4431-898e-eb1c10150abb",
-    "wonOscar": false,
-    "wonEmmy": false
-  }]
+  function addRandomContact() {
+    let contactIndex = Math.floor(Math.random()*remainingContacts.length);
+    setContacts([...contacts, remainingContacts[contactIndex]]);
+    let newRemainingContacts = remainingContacts.toSpliced(contactIndex, 1)
+    setRemainingContacts(newRemainingContacts)
+  }
 
-function Contact(contact) {
-  let hasOscar = contact.wonOscar ? <img src={require("./images/trophy.png")} className="award" alt='trophy'/> : ""
+  function sortByName() {
+    let sortedContactsByName = contacts.slice();
+    sortedContactsByName.sort((a,b) => (a.name > b.name) ? 1 : -1)
+    setContacts(sortedContactsByName)
+  }
 
-  let hasEmmy = contact.wonEmmy ? <img src={require("./images/trophy.png")} className="award" alt='trophy'/> : ""
+  function sortByPopularity() {
+    let sortByPopularity = contacts.slice();
+    sortByPopularity.sort((a,b) => (a.popularity > b.popularity) ? 1 : -1)
+    setContacts(sortByPopularity)
+  }
 
-  return(
+
+  return <div className="App">
+  <h1>IronContacts</h1>
+  {remainingContacts.length > 0 ? <button onClick={addRandomContact}>Add Random Contact</button> : ""}
+  <br/>
+  <button onClick={sortByName}>Sort by Name</button>
+  <button onClick={sortByPopularity}>Sort by Popularity</button> 
+    <table>
     <tr>
+      <th>Picture</th>
+      <th>Name</th> {/* <--iteration 4 */}
+      <th>Popularity</th> {/* <--iteration 4 */}
+      <th>Won an Oscar</th>
+      <th>Won an Emmy</th>
+    </tr>
+    {contacts.map(contact=>{
+      let hasOscar = contact.wonOscar ? <img src={require("./images/trophy.png")} className="award" alt='trophy'/> : ""
+      let hasEmmy = contact.wonEmmy ? <img src={require("./images/trophy.png")} className="award" alt='trophy'/> : ""
+
+      return <tr key={contact.id}>
     <td><img src={contact.pictureUrl} alt='Contact'/></td>
     <td>{contact.name}</td>
     <td>{contact.popularity}</td>
     <td>{hasOscar}</td>
     <td>{hasEmmy}</td>
   </tr>
-  )
-}
-
-function addRandomContact() {
-
-}
-
-function App() {
-  return <div className="App">
-  <h1>IronContacts</h1>
-    <table>
-    <tr>
-      <th>Picture</th>
-      <th>Name</th>
-      <th>Popularity</th>
-      <th>Won an Oscar</th>
-      <th>Won an Emmy</th>
-    </tr>
-    {Contact(contactsList[0])}
-    {Contact(contactsList[1])}
-    {Contact(contactsList[2])}
-    {Contact(contactsList[3])}
-    {Contact(contactsList[4])}
+    })}
     </table>
-    <button onClick={addRandomContact}>Add Random Contact</button>
+    
   </div>;
 }
 
