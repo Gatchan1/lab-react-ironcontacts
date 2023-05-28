@@ -1,3 +1,13 @@
+.title {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.title button {
+  margin: 4px 5px
+}
+
 img {
   height: 80px;
 }
@@ -7,4 +17,14 @@ img {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+p {
+  padding: 0;
+  margin: 0
+}
+
+th,
+td {
+  padding: 0 10px;
 }
